@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 لانشر الألعاب - Super Mario Launcher</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+        .game-card {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .game-card:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-5px);
+        }
+        .game-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        .game-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .game-desc {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 لانشر الألعاب</h1>
+        
+        <div class="game-card" onclick="window.open('mario_game.html', '_blank')">
+            <div class="game-icon">🍄</div>
+            <div class="game-title">Super Mario Bros</div>
+            <div class="game-desc">لعبة المنصات الكلاسيكية - 6 مراحل مثيرة</div>
+        </div>
+        
+        <div class="game-card" onclick="window.open('launcher_advanced.html', '_blank')">
+            <div class="game-icon">🌟</div>
+            <div class="game-title">اللانشر المتقدم</div>
+            <div class="game-desc">واجهة متطورة مع إحصائيات وتأثيرات</div>
+        </div>
+        
+        <p style="margin-top: 30px; opacity: 0.7;">
+            تم التطوير بواسطة Cascade AI | © 2024
+        </p>
+    </div>
+</body>
+</html>

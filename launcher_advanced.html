@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 لانشر الألعاب - Game Launcher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated background particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            text-align: center;
+            backdrop-filter: blur(15px);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(45deg, #FFD700, #FFA500, #FF6B6B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow 2s ease-in-out infinite alternate;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8)); }
+        }
+
+        .header p {
+            font-size: 1.3em;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-content {
+            padding: 50px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 35px;
+            text-align: center;
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.8s;
+        }
+
+        .game-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .game-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .game-card.featured {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(139, 195, 74, 0.2));
+            border-color: #4CAF50;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4); }
+            50% { box-shadow: 0 0 0 20px rgba(76, 175, 80, 0); }
+        }
+
+        .game-icon {
+            font-size: 5em;
+            margin-bottom: 25px;
+            display: block;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .game-title {
+            font-size: 2em;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .game-description {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 30px;
+            line-height: 1.7;
+        }
+
+        .play-button {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .play-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .play-button:hover::before {
+            left: 100%;
+        }
+
+        .play-button:hover {
+            background: linear-gradient(45deg, #45a049, #4CAF50);
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+        }
+
+        .play-button:active {
+            transform: scale(0.98);
+        }
+
+        .stats-section {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 35px;
+            margin-top: 40px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stats-title {
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            text-align: center;
+            color: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-label {
+            font-size: 1em;
+            opacity: 0.8;
+        }
+
+        .footer {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 25px;
+            text-align: center;
+            backdrop-filter: blur(15px);
+            border-top: 2px solid rgba(255, 255, 255, 0.1);
+            margin-top: 50px;
+        }
+
+        .settings-button {
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 18px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.3em;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .settings-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .notification {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            padding: 18px 30px;
+            border-radius: 15px;
+            transform: translateX(400px);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .coming-soon {
+            opacity: 0.6;
+            pointer-events: none;
+            position: relative;
+        }
+
+        .coming-soon .play-button {
+            background: linear-gradient(45deg, #666, #555);
+            cursor: not-allowed;
+        }
+
+        .coming-soon::after {
+            content: 'قريباً';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #FF5722;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 87, 34, 0.4);
+        }
+
+        /* Loading animation */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2000;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(255, 255, 255, 0.3);
+            border-top: 6px solid #4CAF50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .games-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .header h1 {
+                font-size: 2.5em;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <button class="settings-button" onclick="showSettings()">⚙️</button>
+    
+    <div class="notification" id="notification">
+        مرحباً بك في لانشر الألعاب! 🎮
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <header class="header">
+        <h1>🎮 لانشر الألعاب</h1>
+        <p>مجموعة الألعاب المتطورة - استمتع بأفضل الألعاب على الإطلاق</p>
+    </header>
+
+    <main class="main-content">
+        <div class="games-grid">
+            <div class="game-card featured" onclick="launchGame('mario')">
+                <span class="game-icon">🍄</span>
+                <h3 class="game-title">Super Mario Bros</h3>
+                <p class="game-description">
+                    لعبة المنصات الكلاسيكية مع ماريو! اجمع العملات، تجنب الأعداء، واستخدم القوى الخارقة في 6 مراحل مثيرة مع متجر متقدم وزهرة النار.
+                </p>
+                <button class="play-button">▶ العب الآن</button>
+            </div>
+
+            <div class="game-card coming-soon">
+                <span class="game-icon">🏎️</span>
+                <h3 class="game-title">سباق السيارات</h3>
+                <p class="game-description">
+                    سباق مثير بسيارات سريعة ومسارات متنوعة. تحدى أصدقاءك في سباقات مليئة بالإثارة والمنعطفات الخطيرة.
+                </p>
+                <button class="play-button">العب الآن</button>
+            </div>
+
+            <div class="game-card coming-soon">
+                <span class="game-icon">🚀</span>
+                <h3 class="game-title">حرب الفضاء</h3>
+                <p class="game-description">
+                    معركة ملحمية في الفضاء! قاتل الأعداء، اجمع القوى، وأنقذ المجرة من الغزاة الفضائيين في مغامرة لا تُنسى.
+                </p>
+                <button class="play-button">العب الآن</button>
+            </div>
+
+            <div class="game-card coming-soon">
+                <span class="game-icon">🧩</span>
+                <h3 class="game-title">ألغاز الذكاء</h3>
+                <p class="game-description">
+                    تحدى عقلك مع مجموعة من الألغاز المثيرة والتحديات الذهنية المتنوعة التي ستختبر قدراتك الفكرية.
+                </p>
+                <button class="play-button">العب الآن</button>
+            </div>
+        </div>
+
+        <div class="stats-section">
+            <h3 class="stats-title">📊 إحصائيات اللعب</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalPlayTime">0</div>
+                    <div class="stat-label">دقائق اللعب</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="gamesPlayed">0</div>
+                    <div class="stat-label">الألعاب المُلعبة</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="highScore">0</div>
+                    <div class="stat-label">أعلى نقاط</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="achievements">0</div>
+                    <div class="stat-label">الإنجازات</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p><strong>© 2024 لانشر الألعاب - تم التطوير بواسطة Cascade AI</strong></p>
+        <p>الإصدار 2.0 المحسن - جميع الحقوق محفوظة</p>
+    </footer>
+
+    <script>
+        // Create animated particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Initialize launcher
+        let launcherStats = {
+            totalPlayTime: 0,
+            gamesPlayed: 0,
+            highScore: 0,
+            achievements: 0
+        };
+
+        // Load stats from localStorage
+        function loadStats() {
+            const savedStats = localStorage.getItem('launcherStats');
+            if (savedStats) {
+                launcherStats = JSON.parse(savedStats);
+                updateStatsDisplay();
+            }
+        }
+
+        // Save stats to localStorage
+        function saveStats() {
+            localStorage.setItem('launcherStats', JSON.stringify(launcherStats));
+        }
+
+        // Update stats display with animation
+        function updateStatsDisplay() {
+            Object.keys(launcherStats).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    animateNumber(element, parseInt(element.textContent), launcherStats[key]);
+                }
+            });
+        }
+
+        // Animate number changes
+        function animateNumber(element, start, end) {
+            const duration = 1000;
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const current = Math.floor(start + (end - start) * progress);
+                element.textContent = current;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+
+        // Launch game function
+        function launchGame(gameType) {
+            const loading = document.getElementById('loading');
+            
+            switch(gameType) {
+                case 'mario':
+                    // Show loading
+                    loading.classList.add('show');
+                    
+                    // Update stats
+                    launcherStats.gamesPlayed++;
+                    saveStats();
+                    updateStatsDisplay();
+                    
+                    // Show notification
+                    showNotification('🍄 جاري تشغيل Super Mario Bros...');
+                    
+                    // Launch Mario game with delay for effect
+                    setTimeout(() => {
+                        loading.classList.remove('show');
+                        window.open('mario_game.html', '_blank', 'width=1200,height=800,scrollbars=no,resizable=yes');
+                    }, 1500);
+                    break;
+                    
+                default:
+                    showNotification('⚠️ هذه اللعبة غير متوفرة حالياً - قريباً جداً!');
+            }
+        }
+
+        // Show notification with enhanced animation
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+
+        // Enhanced settings function
+        function showSettings() {
+            const settings = `
+🎮 لانشر الألعاب المحسن - الإصدار 2.0
+
+📊 إحصائياتك:
+⏱️ وقت اللعب: ${launcherStats.totalPlayTime} دقيقة
+🎯 الألعاب المُلعبة: ${launcherStats.gamesPlayed}
+🏆 أعلى نقاط: ${launcherStats.highScore}
+🎖️ الإنجازات: ${launcherStats.achievements}
+
+🎮 الألعاب المتوفرة:
+✅ Super Mario Bros - متوفر (6 مراحل + متجر + زهرة النار)
+⏳ سباق السيارات - قريباً
+⏳ حرب الفضاء - قريباً  
+⏳ ألغاز الذكاء - قريباً
+
+🎨 الميزات الجديدة:
+• تأثيرات بصرية محسنة
+• جسيمات متحركة
+• إحصائيات متقدمة
+• واجهة عربية محسنة
+
+هل تريد مسح الإحصائيات؟
+            `;
+            
+            if (confirm(settings)) {
+                // Reset stats with animation
+                const oldStats = {...launcherStats};
+                launcherStats = {
+                    totalPlayTime: 0,
+                    gamesPlayed: 0,
+                    highScore: 0,
+                    achievements: 0
+                };
+                saveStats();
+                updateStatsDisplay();
+                showNotification('🔄 تم مسح الإحصائيات بنجاح!');
+            }
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            createParticles();
+            loadStats();
+            
+            // Show welcome notification
+            setTimeout(() => {
+                document.getElementById('notification').classList.add('show');
+                setTimeout(() => {
+                    document.getElementById('notification').classList.remove('show');
+                }, 4000);
+            }, 1000);
+            
+            // Update play time every minute
+            setInterval(() => {
+                launcherStats.totalPlayTime++;
+                saveStats();
+                updateStatsDisplay();
+            }, 60000);
+        });
+
+        // Enhanced keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case '1':
+                    launchGame('mario');
+                    break;
+                case 'F1':
+                    e.preventDefault();
+                    showSettings();
+                    break;
+                case 'Escape':
+                    if (confirm('هل تريد إغلاق اللانشر؟')) {
+                        window.close();
+                    }
+                    break;
+                case 'r':
+                case 'R':
+                    if (e.ctrlKey) {
+                        e.preventDefault();
+                        location.reload();
+                    }
+                    break;
+            }
+        });
+
+        // Check for Mario game updates
+        function checkMarioStats() {
+            const marioStats = localStorage.getItem('marioGameStats');
+            if (marioStats) {
+                const stats = JSON.parse(marioStats);
+                let updated = false;
+                
+                if (stats.highScore > launcherStats.highScore) {
+                    launcherStats.highScore = stats.highScore;
+                    updated = true;
+                }
+                
+                if (stats.achievements && stats.achievements > launcherStats.achievements) {
+                    launcherStats.achievements = stats.achievements;
+                    updated = true;
+                }
+                
+                if (updated) {
+                    saveStats();
+                    updateStatsDisplay();
+                }
+            }
+        }
+
+        // Check Mario stats every 5 seconds
+        setInterval(checkMarioStats, 5000);
+
+        // Add click sound effect (optional)
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('play-button') || e.target.classList.contains('game-card')) {
+                // Create a subtle click sound using Web Audio API
+                try {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.1);
+                } catch (e) {
+                    // Ignore audio errors
+                }
+            }
+        });
+    </script>
+</body>
+</html>
